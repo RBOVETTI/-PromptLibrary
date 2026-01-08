@@ -1,15 +1,36 @@
 {
   "version": 2,
-  "builds": [
+  "public": true,
+  "headers": [
     {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With, Content-Type, Accept"
+        }
+      ]
+    },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/prompt-library-complete.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
     }
   ]
 }
