@@ -152,16 +152,20 @@ function renderCategoryFilter() {
         'all',
         '🌐',
         'All Categories',
-        promptLibrary.totalPrompts
+        promptLibrary.totalPrompts || 0
     );
     container.appendChild(allButton);
 
     promptLibrary.categories.forEach(category => {
+        const categoryName = category.category || 'Uncategorized';
+        const categoryIcon = category.icon || '📁';
+        const promptsCount = category.prompts?.length || 0;
+
         const chip = createCategoryChip(
-            category.category,
-            category.icon,
-            category.category,
-            category.prompts.length
+            categoryName,
+            categoryIcon,
+            categoryName,
+            promptsCount
         );
         container.appendChild(chip);
     });
@@ -171,9 +175,9 @@ function createCategoryChip(id, icon, name, count) {
     const chip = document.createElement('div');
     chip.className = `category-chip ${activeCategory === id ? 'active' : ''}`;
     chip.innerHTML = `
-        <span>${icon}</span>
-        <span>${name}</span>
-        <span class="count">${count}</span>
+        <span>${icon || '📁'}</span>
+        <span>${name || 'Unknown'}</span>
+        <span class="count">${count || 0}</span>
     `;
 
     chip.addEventListener('click', () => {
@@ -266,25 +270,32 @@ function renderCategories(categories = promptLibrary.categories) {
         const section = document.createElement('div');
         section.className = 'category-section';
 
+        const categoryName = category.category || 'Uncategorized';
+        const categoryIcon = category.icon || '📁';
+        const categoryDescription = category.description || 'No description available';
+        const promptsCount = category.prompts?.length || 0;
+
         section.innerHTML = `
             <div class="category-header">
-                <div class="category-icon">${category.icon}</div>
+                <div class="category-icon">${categoryIcon}</div>
                 <div class="category-info">
-                    <h2>${category.category}</h2>
-                    <div class="category-description">${category.description}</div>
+                    <h2>${categoryName}</h2>
+                    <div class="category-description">${categoryDescription}</div>
                 </div>
-                <div class="category-meta">${category.prompts.length} prompts</div>
+                <div class="category-meta">${promptsCount} prompts</div>
             </div>
-            <div class="prompts-grid" id="prompts-${category.category.replace(/\s+/g, '-')}"></div>
+            <div class="prompts-grid" id="prompts-${categoryName.replace(/\s+/g, '-')}"></div>
         `;
 
         container.appendChild(section);
 
         const promptsGrid = section.querySelector('.prompts-grid');
-        category.prompts.forEach(prompt => {
-            const card = createPromptCard(prompt, category.category);
-            promptsGrid.appendChild(card);
-        });
+        if (category.prompts && Array.isArray(category.prompts)) {
+            category.prompts.forEach(prompt => {
+                const card = createPromptCard(prompt, categoryName);
+                promptsGrid.appendChild(card);
+            });
+        }
     });
 }
 
@@ -294,12 +305,15 @@ function createPromptCard(prompt, categoryName) {
 
     card.className = `prompt-card ${isModified ? 'modified' : ''}`;
 
-    const preview = prompt.prompt.substring(0, 150) + (prompt.prompt.length > 150 ? '...' : '');
+    const promptText = prompt.prompt || 'No content available';
+    const preview = promptText.substring(0, 150) + (promptText.length > 150 ? '...' : '');
+    const promptId = prompt.id || 'unknown';
+    const promptTitle = prompt.title || 'Untitled Prompt';
 
     card.innerHTML = `
         <div class="prompt-header">
-            <div class="prompt-id">${prompt.id}</div>
-            <h3 class="prompt-title">${prompt.title}</h3>
+            <div class="prompt-id">${promptId}</div>
+            <h3 class="prompt-title">${promptTitle}</h3>
         </div>
         <div class="prompt-preview">${preview}</div>
     `;
@@ -314,13 +328,13 @@ function createPromptCard(prompt, categoryName) {
 // ========================================
 function openModal(prompt, categoryName) {
     currentPrompt = prompt;
-    originalPrompt = prompt.prompt;
+    originalPrompt = prompt.prompt || 'No content available';
 
     const modal = document.getElementById('promptModal');
-    document.getElementById('modalTitle').textContent = prompt.title;
-    document.getElementById('modalId').textContent = `${prompt.id} • ${categoryName}`;
+    document.getElementById('modalTitle').textContent = prompt.title || 'Untitled Prompt';
+    document.getElementById('modalId').textContent = `${prompt.id || 'unknown'} • ${categoryName || 'Unknown'}`;
 
-    const displayText = modifiedPrompts.get(prompt.id) || prompt.prompt;
+    const displayText = modifiedPrompts.get(prompt.id) || prompt.prompt || 'No content available';
     document.getElementById('promptDisplay').textContent = displayText;
 
     // Show/hide reset button if modified
