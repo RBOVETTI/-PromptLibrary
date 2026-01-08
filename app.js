@@ -22,10 +22,21 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================================
 async function loadPromptLibrary() {
     try {
-        const response = await fetch('prompt-library-complete.json');
-        if (!response.ok) throw new Error('Failed to load prompt library');
+        console.log('Loading prompt library...');
+
+        // Show loading state
+        document.getElementById('totalPrompts').textContent = 'Loading...';
+        document.getElementById('categoriesCount').textContent = 'Please wait';
+
+        const response = await fetch('./prompt-library-complete.json');
+        console.log('Fetch response:', response.status, response.statusText);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         promptLibrary = await response.json();
+        console.log('Prompt library loaded:', promptLibrary.totalPrompts, 'prompts');
 
         // Update header
         document.getElementById('version').textContent = `v${promptLibrary.version}`;
@@ -35,9 +46,34 @@ async function loadPromptLibrary() {
         // Render UI
         renderCategoryFilter();
         renderCategories();
+
+        showToast(`✅ Loaded ${promptLibrary.totalPrompts} prompts successfully!`, true);
     } catch (error) {
         console.error('Error loading prompt library:', error);
-        showToast('Error loading prompt library', false);
+
+        // Show detailed error
+        const errorMsg = `Failed to load prompt library: ${error.message}`;
+        document.getElementById('totalPrompts').textContent = 'Error loading data';
+        document.getElementById('categoriesCount').textContent = 'See console';
+
+        // Show error message in the main area
+        const container = document.getElementById('categoriesGrid');
+        container.innerHTML = `
+            <div style="padding: 40px; text-align: center; background: var(--bg-primary); border-radius: var(--radius-lg); border: 2px solid #ef4444;">
+                <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                <h2 style="color: #ef4444; margin-bottom: 12px;">Error Loading Prompt Library</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">${errorMsg}</p>
+                <details style="text-align: left; background: var(--bg-secondary); padding: 16px; border-radius: 8px; margin-top: 20px;">
+                    <summary style="cursor: pointer; font-weight: 600; margin-bottom: 8px;">Technical Details</summary>
+                    <pre style="font-size: 12px; overflow-x: auto; color: var(--text-secondary);">${error.stack || error.message}</pre>
+                </details>
+                <p style="margin-top: 20px; font-size: 14px; color: var(--text-tertiary);">
+                    Make sure <code>prompt-library-complete.json</code> is accessible at the root of your deployment.
+                </p>
+            </div>
+        `;
+
+        showToast('❌ ' + errorMsg, false);
     }
 }
 
