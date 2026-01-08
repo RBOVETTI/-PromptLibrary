@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Library - Professional Collection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>🤖 AI Prompt Library</h1>
+                    <span class="version" id="version"></span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="darkModeToggle" title="Toggle dark mode">
+                        <span class="icon">🌙</span>
+                    </button>
+                    <button class="btn-primary" id="exportBtn">
+                        <span class="icon">💾</span>
+                        Export Modified
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Search and Filter Section -->
+            <div class="search-section">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search prompts by title, description, or content..."
+                        autocomplete="off"
+                    >
+                    <button class="clear-search" id="clearSearch" style="display: none;">✕</button>
+                </div>
+                <div class="stats">
+                    <span id="totalPrompts">0 prompts</span>
+                    <span class="separator">•</span>
+                    <span id="categoriesCount">0 categories</span>
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="category-filter" id="categoryFilter"></div>
+
+            <!-- Results Info -->
+            <div class="results-info" id="resultsInfo"></div>
+
+            <!-- Categories Grid -->
+            <div class="categories-grid" id="categoriesGrid"></div>
+
+            <!-- No Results Message -->
+            <div class="no-results" id="noResults" style="display: none;">
+                <div class="no-results-icon">🔍</div>
+                <h3>No prompts found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Prompt Modal -->
+    <div class="modal" id="promptModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="prompt-id" id="modalId"></div>
+                <div class="prompt-content">
+                    <div class="prompt-actions">
+                        <button class="btn-action" id="copyBtn">
+                            <span class="icon">📋</span>
+                            Copy
+                        </button>
+                        <button class="btn-action" id="editBtn">
+                            <span class="icon">✏️</span>
+                            Edit
+                        </button>
+                        <button class="btn-action btn-success" id="saveBtn" style="display: none;">
+                            <span class="icon">✅</span>
+                            Save
+                        </button>
+                        <button class="btn-action btn-secondary" id="cancelBtn" style="display: none;">
+                            <span class="icon">↩️</span>
+                            Cancel
+                        </button>
+                        <button class="btn-action" id="resetBtn" style="display: none;">
+                            <span class="icon">🔄</span>
+                            Reset
+                        </button>
+                    </div>
+                    <div class="prompt-display" id="promptDisplay"></div>
+                    <textarea class="prompt-editor" id="promptEditor" style="display: none;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
